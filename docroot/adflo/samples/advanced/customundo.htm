@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Custom undo</title>
+     
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, node1, node2, node3;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.fillStyle = 'white';
+
+            flow.nodeModel.strokeStyle = 'blue';
+            flow.nodeModel.fillStyle = 'white';
+            flow.nodeModel.gradientFillStyle = 'white';
+
+            // Create three nodes, each having a distinct text and a distinct text color. 
+
+            node1 = flow.addNode(20, 20, 80, 80, "node 1");
+            node1.textFillStyle = 'blue';
+
+            node2 = flow.addNode(140, 140, 80, 80, "node 2");
+            node2.textFillStyle = 'red';
+
+            node3 = flow.addNode(260, 260, 80, 80, "node 3");
+            node3.textFillStyle = 'green';
+
+            flow.refresh();
+
+            document.addEventListener("selectionChange", selectionChangeEventHandler, false);
+
+            // You could also use the click event instead of the selectionChange event
+            //canvas.addEventListener('click', ev_click, false);
+        }
+
+        function selectionChangeEventHandler(ev) {
+            var node;
+
+            if (flow.isNode(ev.item)) {
+                node = ev.item;
+
+                // Update the "text" textbox
+                textzone = document.getElementById('text');
+                textzone.value = node.text;
+
+                // Update the "color" combo box
+                color = node.textFillStyle;
+                combo = document.getElementById('colorSelection');
+                if (color == 'blue') {
+                    combo.selectedIndex = 0;
+                }
+                else if (color == 'red') {
+                    combo.selectedIndex = 1;
+                }
+                else {
+                    combo.selectedIndex = 2;
+                }
+            }
+        }
+
+        function ev_click(ev) {
+            var selectedItems, node, textzone, color, combo;
+
+            if (flow.isSelChanged()) {
+                selectedItems = flow.getSelectedItems();
+                if (selectedItems.length > 0) {
+                    if (flow.isNode(selectedItems[0])) {
+                        node = selectedItems[0];
+
+                        // Update the "text" textbox
+                        textzone = document.getElementById('text');
+                        textzone.value = node.text;
+
+                        // Update the "color" combo box
+                        color = node.textFillStyle;
+                        combo = document.getElementById('colorSelection');
+                        if (color == 'blue') {
+                            combo.selectedIndex = 0;
+                        }
+                        else if (color == 'red') {
+                            combo.selectedIndex = 1;
+                        }
+                        else {
+                            combo.selectedIndex = 2;
+                        }
+                    }
+                }
+            }
+        }
+
+        function submit() {
+            var selectedItems, node, textzone, combo;
+
+            selectedItems = flow.getSelectedItems();
+            if (selectedItems.length > 0) {
+                if (flow.isNode(selectedItems[0])) {
+                    node = selectedItems[0];
+
+                    flow.taskManager.submitTask(
+                        new NodePropertiesTask(node, node.text, node.textFillStyle));
+
+                    // Set text
+                    textzone = document.getElementById('text');
+                    node.text = textzone.value;
+
+                    // Set text color
+                    combo = document.getElementById('colorSelection');
+                    node.textFillStyle = combo.value;
+
+                    node.refresh();
+                }
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+        var NodePropertiesTask = function (node, oldText, oldTextFillStyle) {
+            this.currentItem = node; 
+            this.code = "NodeProperties";
+            this.group = -1;
+            this.groupCode = "AF_none";
+
+            this.oldText = oldText;
+            this.oldTextFillStyle = oldTextFillStyle;
+
+            this.redo = function () {
+                this.undo();
+            };
+
+            this.undo = function () {
+                var oldText = this.currentItem.text;
+                this.currentItem.text = this.oldText;
+                this.oldText = oldText;
+
+                var oldTextFillStyle = this.currentItem.textFillStyle;
+                this.currentItem.textFillStyle = this.oldTextFillStyle;
+                this.oldTextFillStyle = oldTextFillStyle;
+
+                this.currentItem.refresh();
+            };
+        };
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+        <button onclick="selectall()">Select All</button>
+        <button onclick="delete2()">Delete</button>
+        <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+            <option value="none" selected>none</option>
+            <option value="selection" >selection</option>
+            <option value="selection2">selection2</option>
+            <option value="zoom">zoom</option>
+            <option value="pan">pan</option>
+        </select>
+        <div id="div1" style="border-style: solid; width: 900px; height: 400px; overflow: auto;">
+            <canvas id="canvas1" width="900" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+        </div>
+        <p>You can change the text and the text color of the selected node. And then, you can undo this task.</p> 
+        node text : <input type="text" id="text"><br />
+        node text color: <select id="colorSelection" >
+            <option value="blue" >blue</option>
+            <option value="red" >red</option>
+            <option value="green">green</option>
+        </select><br />
+        <button onclick="submit()">Submit</button>
+  </body>
+</html>

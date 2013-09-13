@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tutorial AddFlow for HTML 5 : Llink LineStyle property</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, link1, link2, link3, link4;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = '#ff8';
+
+            flow.linkModel.strokeStyle = 'rgb(0, 64, 192)';
+
+            // Create 10 nodes  
+            flow.addNode(50, 20, 40, 40);
+            flow.addNode(400, 80, 40, 40);
+
+            flow.addNode(50, 100, 40, 40);
+            flow.addNode(400, 160, 40, 40);
+
+            flow.addNode(50, 180, 40, 40);
+            flow.addNode(400, 240, 40, 40);
+
+            flow.addNode(50, 260, 40, 40);
+            flow.addNode(400, 320, 40, 40);
+
+            flow.addNode(50, 340, 40, 40);
+            flow.addNode(400, 400, 40, 40);
+
+            // Get the collection of nodes
+            nodes = [];
+            items = flow.getItems();
+            for (i in items) {
+                nodes.push(items[i]);
+            }
+
+            // Create 5 links
+            link1 = flow.addLink(nodes[0], nodes[1], "polyline");
+            link1.addPoint(225, 20);
+            link1.addPoint(275, 100);
+
+            link2 = flow.addLink(nodes[2], nodes[3], "bezier");
+            link2.setLineStyle("bezier");
+
+            link3 = flow.addLink(nodes[4], nodes[5], "spline");
+            link3.setLineStyle("spline");
+            link3.addPoint(225, 200);
+
+            link4 = flow.addLink(nodes[6], nodes[7], "orthogonal");
+            link4.setLineStyle("orthogonal");
+
+            link5 = flow.addLink(nodes[8], nodes[9], "database");
+            link5.setLineStyle("database");
+
+            flow.refresh();
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 460px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="460">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+     <p>There are 5 distinct line styles values for links. The polyline and spline line style allows the addition of new link points. </p>
+  </body>
+</html>

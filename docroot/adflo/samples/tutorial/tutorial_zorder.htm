@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tutorial AddFlow for HTML 5 : ZOrdering</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas,  node1, node2, node3, node4;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+            flow.fillStyle = '#efe';
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = '#ff8';
+            flow.nodeModel.shapeFamily = "rectangle";
+
+            flow.linkModel.strokeStyle = 'rgb(0, 64, 192)';
+            flow.linkModel.textFillStyle = '#f00';
+
+            flow.beginUpdate();
+
+            node1 = flow.addNode(50, 100, 80, 80, "0");
+
+            node2 = flow.addNode(100, 140, 80, 80, "1");
+
+            node3 = flow.addNode(120, 100, 80, 80, "2");
+            node3.shapeFamily = "ellipse";
+
+            node4 = flow.addNode(110, 70, 20, 80, "3");
+
+            flow.endUpdate();
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+        function sendToBack() {
+            flow.sendToBack();
+        }
+
+        function bringToFront() {
+            flow.bringToFront();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <button onclick="sendToBack()">Back</button>
+    <button onclick="bringToFront()">Front</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 400px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+     <p>Select a node and click on the 'Back' or 'Front' button </p>
+  </body>
+</html>

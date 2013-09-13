@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Node Text</title>
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, node1, node2, node3, node4, node5, node6, node7, node8, node9;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.fillStyle = '#efe';
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = 'white';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.font = "12px Arial";
+            flow.nodeModel.textLineHeight = 12;
+            flow.nodeModel.textMargin = { left: 10, top: 10, right: 10, bottom: 10 };
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            node1 = flow.addNode(50, 20, 120, 80, "left\r\ntop");
+            node1.textPosition = "leftTop";
+
+            node2 = flow.addNode(250, 20, 120, 80, "center\r\ntop");
+            node2.textPosition = "centerTop";
+
+            node3 = flow.addNode(450, 20, 120, 80, "right\r\ntop");
+            node3.textPosition = "rightTop";
+
+            node4 = flow.addNode(50, 120, 120, 80, "left\r\nmiddle");
+            node4.textPosition = "leftMiddle";
+
+            node5 = flow.addNode(250, 120, 120, 80, "center\r\nmiddle");
+            node5.textPosition = "centerMiddle";
+
+            node6 = flow.addNode(450, 120, 120, 80, "right\r\nmiddle");
+            node6.textPosition = "rightMiddle";
+
+            node7 = flow.addNode(50, 220, 120, 80, "left\r\nbottom");
+            node7.textPosition = "leftBottom";
+
+            node8 = flow.addNode(250, 220, 120, 80, "center\r\nbottom");
+            node8.textPosition = "centerBottom";
+
+            node9 = flow.addNode(450, 220, 120, 80, "right\r\nbottom");
+            node9.textPosition = "rightBottom";
+
+            flow.refresh();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 400px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+  </body>
+</html>
+

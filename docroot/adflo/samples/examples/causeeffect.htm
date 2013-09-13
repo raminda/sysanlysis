@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>AddFlow for HTML 5 : cause/effect Example</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        var displayLane = function(ctx, x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, 2000, 125); 
+        };
+
+        var displayLaneTitle = function(ctx, text, x, y) {
+            
+            ctx.fillStyle = "blue";
+            ctx.font = "20px Arial"
+            ctx.fillText(text, x, y);
+        };
+
+        var drawLanes = function (ctx) {
+            displayLane(ctx, 0, 0, 'lightyellow');
+            displayLaneTitle(ctx, "Financial", 700, 100);
+
+            displayLane(ctx, 0, 125, 'lightblue');
+            displayLaneTitle(ctx, "Customer", 700, 225);
+
+            displayLane(ctx, 0, 250, 'lightyellow');
+            displayLaneTitle(ctx, "Internal", 700, 350);
+
+            displayLane(ctx, 0, 375, 'lightblue');
+            displayLaneTitle(ctx, "Learning", 700, 475);
+        };
+
+        function createDiagram() {
+            var canvas, items, nodes, i;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+            flow.fillStyle = 'white';
+            flow.ownerDraw = drawLanes;
+            flow.canDrawNode = false;
+            flow.refresh();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+
+            // Create the nodes-------------------------------------
+
+            flow.nodeModel.strokeStyle = 'orange';
+            flow.nodeModel.textFillStyle = 'navy';
+            flow.nodeModel.textLineHeight = 11;
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.font = "10px Arial";
+            flow.nodeModel.isYMoveable = false;
+            flow.nodeModel.isYSizeable = false;
+            flow.nodeModel.lineWidth = 2;
+
+            // Financial
+            flow.nodeModel.fillStyle = 'yellow';
+            flow.nodeModel.gradientFillStyle = 'yellow';
+            flow.nodeModel.fillShape = function (ctx, x, y, w, h) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(x, y, w, 20);
+                ctx.fillStyle = 'black';
+                ctx.textBaseline = 'top';
+                ctx.font = "12px Arial";
+                ctx.fillText("Financial", x + 2, y + 2);
+            }
+            flow.addNode(525, 25, 150, 75, "Control expenditure growth");
+            flow.addNode(275, 25, 150, 75, "Improve product contribution");
+            flow.addNode(25, 25, 150, 75, "Maintain profitable growth");
+
+            // Customer
+            flow.nodeModel.fillStyle = 'lightsalmon';
+            flow.nodeModel.gradientFillStyle = 'lightsalmon';
+            flow.nodeModel.fillShape = function (ctx, x, y, w, h) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(x, y, w, 20);
+                ctx.fillStyle = 'black';
+                ctx.textBaseline = 'top';
+                ctx.font = "12px Arial";
+                ctx.fillText("Customer", x + 2, y + 2);
+            }
+            flow.addNode(25, 150, 150, 75, "Achieve 95% customer satisfaction");
+            flow.addNode(275, 150, 150, 75, "Improve customer loyalty");
+
+            // Learning
+            flow.nodeModel.fillStyle = 'steelblue';
+            flow.nodeModel.gradientFillStyle = 'steelblue';
+            flow.nodeModel.fillShape = function (ctx, x, y, w, h) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(x, y, w, 20);
+                ctx.fillStyle = 'black';
+                ctx.textBaseline = 'top';
+                ctx.font = "12px Arial";
+                ctx.fillText("Learning", x + 2, y + 2);
+            }
+            flow.addNode(25, 400, 150, 75, "Recruit Management internally");
+            flow.addNode(275, 400, 150, 75, "Retain the best people");
+
+            // Internal
+            flow.nodeModel.fillStyle = 'limegreen';
+            flow.nodeModel.gradientFillStyle = 'limegreen';
+            flow.nodeModel.fillShape = function (ctx, x, y, w, h) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(x, y, w, 20);
+                ctx.fillStyle = 'black';
+                ctx.textBaseline = 'top';
+                ctx.font = "12px Arial";
+                ctx.fillText("Internal", x + 2, y + 2);
+            }
+            flow.addNode(25, 275, 150, 75, "Improve Product Quality");
+            flow.addNode(275, 275, 150, 75, "Improve sales lead generation");
+
+            items = flow.getItems();
+
+            // Get the collection of nodes
+            nodes = [];
+            for (i in items) {
+                if (flow.isNode(items[i])) { // this test is not necessary here
+                    nodes.push(items[i]);
+                }
+            }
+
+            // Create links------------------------------------------
+
+            flow.linkModel.strokeStyle = 'black';
+            flow.linkModel.lineStyle = "polyline";
+            flow.linkModel.lineWidth = 2;
+            flow.linkModel.fillStyle = 'yellow';
+
+            flow.addLink(nodes[5], nodes[6]);
+            flow.addLink(nodes[6], nodes[7]);
+            flow.addLink(nodes[6], nodes[7]);
+            flow.addLink(nodes[7], nodes[3]);
+            flow.addLink(nodes[3], nodes[2]);
+            flow.addLink(nodes[8], nodes[0]);
+            flow.addLink(nodes[3], nodes[4]);
+
+            var link = flow.addLink(nodes[0], nodes[1]);
+            link.setPoint(525, 50, 0);
+            link.setPoint(425, 50, 1);
+
+            link = flow.addLink(nodes[1], nodes[2]);
+            link.setPoint(275, 50, 0);
+            link.setPoint(175, 50, 1);
+
+            link = flow.addLink(nodes[0], nodes[2]);
+            link.setPoint(525, 85, 0);
+            link.setPoint(175, 85, 1);
+            link.addPoint(350, 120);
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 500px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="500">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+      <p>In this diagram, nodes can only me moved or resized horizontally.</p>
+  </body>
+</html>

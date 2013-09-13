@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Shapes</title>
+     
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, nodes, node, i, x, y;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            // To accelerate the drawing
+            flow.beginUpdate();
+
+            flow.fillStyle = 'white';
+            flow.refresh();
+
+            flow.nodeModel.fillStyle = 'yellow';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.font = "10px Arial";
+            flow.nodeModel.textLineHeight = 10;
+
+            nodes = [];
+
+            // Draws 3 nodes having an 'ellipse' shape family
+            flow.nodeModel.strokeStyle = 'blue';
+
+            node = flow.addNode(0, 0, 80, 80, "ellipse");
+            node.shapeFamily = "ellipse";
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "or");
+            node.shapeFamily = "ellipse";
+            node.fillShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                ctx.moveTo(x + w / 2, y);
+                ctx.lineTo(x + w / 2, y + h);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y + h / 2);
+                ctx.lineTo(x + w, y + h / 2);
+                ctx.stroke();
+            };
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "summing junction");
+            node.shapeFamily = "ellipse";
+            node.fillShape = function (ctx, x, y, w, h) {
+                var a = w / 2 * Math.cos(Math.PI / 4);
+                var b = h / 2 * Math.sin(Math.PI / 4);
+                ctx.beginPath();
+                ctx.moveTo(x + w / 2 - a, y + h / 2 - b);
+                ctx.lineTo(x + w / 2 + a, y + h / 2 + b);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x + w / 2 + a, y + h / 2 - b);
+                ctx.lineTo(x + w / 2 - a, y + h / 2 + b);
+                ctx.stroke();
+            };
+            nodes.push(node);
+
+            // Draws 3 nodes having a 'rectangle' shape family
+            flow.nodeModel.strokeStyle = 'red';
+
+            node = flow.addNode(0, 0, 80, 80, "rectangle");
+            node.shapeFamily = "rectangle";
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "predefined process");
+            node.shapeFamily = "rectangle";
+            node.fillShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                ctx.moveTo(x + w / 6, y);
+                ctx.lineTo(x + w / 6, y + h);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x + w - w / 6, y);
+                ctx.lineTo(x + w - w / 6, y + h);
+                ctx.stroke();
+            };
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "internal storage");
+            node.shapeFamily = "rectangle";
+            node.fillShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                ctx.moveTo(x, y + h / 6);
+                ctx.lineTo(x + w, y + h / 6);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x + w / 6, y);
+                ctx.lineTo(x + w / 6, y + h);
+                ctx.stroke();
+            };
+            nodes.push(node);
+
+            // Draws several nodes having a 'polygon' shape family
+            flow.nodeModel.strokeStyle = 'green';
+
+            node = flow.addNode(0, 0, 80, 80, "losange");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 50], [50, 0], [100, 50], [50, 100]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "star");
+            node.shapeFamily = "polygon";
+            node.polygon = [[9, 2], [11, 7], [17, 7], [12, 10], [14, 15], [9, 12], [4, 15], [6, 10], [1, 7], [7, 7]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "data");
+            node.shapeFamily = "polygon";
+            node.polygon = [[10, 0], [60, 0], [50, 40], [0, 40]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "extract");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 100], [100, 100], [50, 0]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "merge");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 0], [50, 100], [100, 0]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "octogon");
+            node.shapeFamily = "polygon";
+            node.polygon = [[50, 100], [85.355, 85.355], [100, 50], [85.355, 14.644], [50, 0], [14.644, 14.644], [0, 50], [14.644, 85.355]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "collate");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 0], [100, 0], [0, 100], [100, 100], [0, 0]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "offpage connection");
+            node.shapeFamily = "polygon";
+            node.polygon = [[100, 50], [50, 100], [0, 100], [0, 0], [50, 0]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "process iso9000");
+            node.shapeFamily = "polygon";
+            node.polygon = [[100, 50], [75, 100], [0, 100], [25, 50], [0, 0], [75, 0]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "preparation");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 20], [10, 0], [50, 0], [60, 20], [50, 40], [10, 40]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "manual operation");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 0], [60, 0], [50, 40], [10, 40]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "loop limit");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 10], [10, 0], [50, 0], [60, 10], [60, 40], [0, 40]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "card");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 10], [10, 0], [60, 0], [60, 40], [0, 40]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "manual input");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 10], [60, 0], [60, 40], [0, 40]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "offpage reference");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 0], [60, 0], [60, 20], [30, 40], [00, 20]];
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "transport");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 50], [25, 0], [25, 25], [75, 25], [75, 0], [100, 50], [75, 100], [75, 75], [25, 75], [25, 100]];
+            nodes.push(node);
+
+            // Draws several nodes having a 'other' shape family
+            flow.nodeModel.strokeStyle = 'black';
+
+            node = flow.addNode(0, 0, 80, 80, "delay");
+            node.shapeFamily = "other";
+            node.drawShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                ctx.moveTo(x + 3 * w / 4, y);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x, y + h);
+                ctx.lineTo(x + 3 * w / 4, y + h);
+                ctx.bezierCurveTo(x + w + w / 16, y + h, x + w + w / 16, y, x + w - w / 4, y);
+                ctx.closePath();
+            };
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "terminator");
+            node.shapeFamily = "other";
+            node.drawShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                ctx.moveTo(x + w / 4, y);
+                //ctx.arcTo(x, y, x, y + h / 2, Math.PI * 8);
+                //ctx.arcTo(x, y + h, x + w / 4, y + h, Math.PI * 8);
+                ctx.bezierCurveTo(x - w / 16, y, x - w / 16, y + h, x + w / 4, y + h);
+                ctx.lineTo(x + 3 * w / 4, y + h);
+                //ctx.arcTo(x + w, y + h, x + w, y + h / 2, Math.PI * 8);
+                //ctx.arcTo(x + w, y, x + 3 * w / 4, y, Math.PI * 8);
+                ctx.bezierCurveTo(x + w + w / 16, y + h, x + w + w / 16, y, x + w - w / 4, y);
+                ctx.lineTo(x + w / 4, y);
+                ctx.closePath();
+            };
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "round rectangle");
+            node.shapeFamily = "other";
+            node.drawShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                var radius = 8;
+                ctx.moveTo(x + radius, y);
+                ctx.lineTo(x + w - radius, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+                ctx.lineTo(x + w, y + h - radius);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+                ctx.lineTo(x + radius, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+                ctx.lineTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.closePath();
+            };
+            nodes.push(node);
+
+            node = flow.addNode(0, 0, 80, 80, "document");
+            node.shapeFamily = "other";
+            node.drawShape = function (ctx, x, y, w, h) {
+                ctx.beginPath();
+                ctx.moveTo(x, y + h - h / 16);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x + w, y);
+                ctx.lineTo(x + w, y + h - h / 16);
+                ctx.bezierCurveTo(x + w - w / 4, y + h - h / 4, x + w / 4, y + h + h / 8, x, y + h - h / 16);
+                ctx.closePath();
+            };
+            nodes.push(node);
+
+            // Place each node on the canvas
+            for (i = 0; i < nodes.length; i++) {
+                node = nodes[i];
+                x = 20 + (i % 7) * 100;
+                y = 20 + Math.floor(i / 7) * 100;
+                node.setLeft(x);
+                node.setTop(y);
+            }
+
+            flow.endUpdate();
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+        <button onclick="selectall()">Select All</button>
+        <button onclick="delete2()">Delete</button>
+        <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+            <option value="none" selected>none</option>
+            <option value="selection" >selection</option>
+            <option value="selection2">selection2</option>
+            <option value="zoom">zoom</option>
+            <option value="pan">pan</option>
+        </select>
+        <div id="div1" style="border-style: solid; width: 1000px; height: 500px; overflow: auto;">
+            <canvas id="canvas1" width="1000" height="500">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+        </div>
+  </body>
+</html>

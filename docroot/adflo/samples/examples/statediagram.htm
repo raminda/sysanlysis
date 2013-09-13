@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : State diagram Example</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function init() {
+            var canvas, node1, node2, node3, node4, node5, link;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+            flow.fillStyle = 'white';
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = 'lightblue';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.shapeFamily = "ellipse";
+            flow.nodeModel.isContextHandle = true;
+
+            flow.linkModel.strokeStyle = 'rgb(0, 64, 192)';
+            flow.linkModel.textFillStyle = 'navy';
+            flow.linkModel.lineStyle = 'bezier';
+            flow.linkModel.isContextHandle = true;
+
+            document.addEventListener("context", contextEventHandler, false);
+            
+            createDiagram();
+        }
+
+        function contextEventHandler(ev) {
+            var text = prompt("Please enter new item text", ev.item.text);
+            if (text != null) {
+                ev.item.text = text;
+            }
+        }
+
+        function createDiagram() {
+            var node1, node2, node3, node4, node5, link;
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+
+            node1 = flow.addNode(36, 220, 106.5, 48, "Development");
+            node2 = flow.addNode(309, 220, 96, 48, "Alpha tests");
+            node3 = flow.addNode(201, 60, 81, 64.5, "Design phase");
+            node4 = flow.addNode(310.5, 420, 105, 49.5, "Beta tests");
+            node5 = flow.addNode(43.5, 430, 105, 45, "Release");
+
+            link = flow.addLink(node1, node2, "End");
+            link.setPoint(177, 228, 1);
+            link.setPoint(260, 228, 2);
+
+            link = flow.addLink(node3, node3, "Test");
+            link.setPoint(331.5, 21, 1);
+            link.setPoint(195, 7.5, 2);
+
+            link = flow.addLink(node2, node1, "Problem");
+            link.setPoint(250, 300, 1);
+            link.setPoint(213, 300, 2);
+
+            link = flow.addLink(node2, node4, "Stable");
+            link.setPoint(351, 320, 1);
+            link.setPoint(324, 320, 2);
+
+            link = flow.addLink(node4, node5, "Work");
+
+            link = flow.addLink(node5, node1, "new features");
+
+            link = flow.addLink(node5, node5, "bug");
+            link.setPoint(170, 550, 1);
+            link.setPoint(60, 570, 2);
+
+            link = flow.addLink(node3, node1, "Development decision");
+            link.setPoint(120, 153, 1);
+            link.setPoint(130, 153, 2);
+
+            link = flow.addLink(node2, node2, "bug");
+            link.setPoint(410, 170, 1);
+            link.setPoint(290, 180, 2);
+
+            link = flow.addLink(node4, node4, "bug");
+            link.setPoint(480, 408, 1);
+            link.setPoint(400, 366, 2);
+
+            link = flow.addLink(node2, node1, "new ideas");
+            link.setPoint(270, 370, 1);
+            link.setPoint(250, 370, 2);
+
+            link = flow.addLink(node4, node1, "Design problem");
+            link.strokeStyle = 'orange';
+            link.setPoint(255, 400, 1);
+            link.setPoint(170, 400, 2);
+            link.lineStyle = "spline";
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+            createDiagram();
+        }
+    </script>
+  </head>
+
+  <body onload="init()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 500px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="520">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+     <p>In this diagram, all the links are Bezier links except the orange one whose LineStyle is 'Spline'</p>
+  </body>
+</html>

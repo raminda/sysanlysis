@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="iso-8859-1">
+    <title>AddFlow for HTML 5</title>        
+    <link rel="stylesheet" href="dtree/dtree.css" />
+    <script src="dtree/dtree.js"></script>
+    <link rel="stylesheet" href="skins/styles.css" />
+  </head>
+  <body>  
+    <header id="logo">
+        <hgroup>
+            <h1><a href="index.htm">Lassalle Technologies</a></h1>
+        </hgroup>
+    </header>
+
+    <div style="width:15%; height:100%; overflow:auto; float:left; margin-left:8px; margin-top:8px; background-color:beige;">
+         <script type="text/javascript">
+             var d = new dTree('d');
+             d.config.target = 'main';
+             var t = 0;
+             d.add(t++, -1, 'AddFlow Demo', '');
+             var ex = d.add(t++, 0, 'Examples', '');
+             d.add(t++, ex, 'State diagram', 'samples/examples/statediagram.htm');
+             d.add(t++, ex, 'Flowchart', 'samples/examples/flowchart.htm');
+             d.add(t++, ex, 'Workflow', 'samples/examples/workflow.htm');
+             d.add(t++, ex, 'Genealogy', 'samples/examples/genealogy.htm');
+             d.add(t++, ex, 'Social network', 'samples/examples/socialnetwork.htm');
+             d.add(t++, ex, 'Network', 'samples/examples/network.htm');
+             d.add(t++, ex, 'Cause/Effect', 'samples/examples/causeeffect.htm');
+             var tu = d.add(t++, 0, 'Tutorial', '');
+             d.add(t++, tu, 'Our first program', 'samples/tutorial/tutorial_firstprogram.htm');
+             d.add(t++, tu, 'Node and link properties', 'samples/tutorial/tutorial_properties.htm');
+             d.add(t++, tu, 'Default properties', 'samples/tutorial/tutorial_defaultproperties.htm');
+             d.add(t++, tu, 'Stretching links', 'samples/tutorial/tutorial_stretchinglinks.htm');
+             d.add(t++, tu, 'Node text', 'samples/tutorial/tutorial_nodetext.htm');
+             d.add(t++, tu, 'Node image', 'samples/tutorial/tutorial_nodeimage.htm');
+             d.add(t++, tu, 'Node shapes', 'samples/tutorial/tutorial_shapes.htm');
+             d.add(t++, tu, 'Node pins', 'samples/tutorial/tutorial_pins.htm');
+             d.add(t++, tu, 'Link arrows', 'samples/tutorial/tutorial_arrows.htm');
+             d.add(t++, tu, 'Link line styles', 'samples/tutorial/tutorial_linestyle.htm');
+             d.add(t++, tu, 'ZOrder', 'samples/tutorial/tutorial_zorder.htm');
+             d.add(t++, tu, 'Navigation', 'samples/tutorial/tutorial_navigation.htm');
+             var ad = d.add(t++, 0, 'Advanced', '');
+             d.add(t++, ad, 'Custom undo', 'samples/advanced/customundo.htm');
+             d.add(t++, ad, 'JSON test', 'samples/advanced/json.htm');
+             d.add(t++, ad, 'Stress', 'samples/advanced/stress.htm');
+             document.write(d);
+             d.openTo(2, true);
+        </script>
+    </div>
+      
+    <iframe style="width:80%; height:600px; background-color:lightyellow;" name="main" src="samples/examples/statediagram.htm">
+        Your browser does not support iframes.
+    </iframe>
+
+    <footer>
+      <ul>
+        <li><img border="0" src="http://www.chami.com/cgi-bin/lcpnp/livecntr.pl?0+6+6x0757" width="1" height="1" /></li>
+      </ul>
+      <p>Copyright 2012 Lassalle Technologies. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

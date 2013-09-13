@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tutorial AddFlow for HTML 5 : Navigation Example</title>
+
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+        
+        function createDiagram() {
+            var canvas, nodes, items, i;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = 'white';
+            flow.nodeModel.gradientFillStyle = 'lightseagreen';
+
+            flow.linkModel.strokeStyle = 'lightseagreen';
+
+            // Create nodes
+            flow.addNode(120, 120, 40, 40, "0");
+            flow.addNode(20, 80, 40, 40, "1");
+            flow.addNode(100, 20, 40, 40, "2");
+            flow.addNode(200, 40, 40, 40, "3");
+            flow.addNode(40, 160, 40, 40, "4");
+            flow.addNode(40, 20, 40, 40, "5");
+            flow.addNode(80, 300, 40, 40, "6");
+            flow.addNode(160, 260, 40, 40, "7");
+            flow.addNode(220, 390, 40, 40, "8");
+            flow.addNode(300, 160, 40, 40, "9");
+            flow.addNode(280, 60, 40, 40, "10");
+            flow.addNode(360, 20, 40, 40, "11");
+            flow.addNode(380, 140, 40, 40, "12");
+            flow.addNode(300, 300, 40, 40, "13");
+            flow.addNode(430, 40, 40, 40, "14");
+
+            items = flow.getItems();
+
+            // Get the collection of nodes
+            nodes = [];
+            for (i in items) {
+                if (flow.isNode(items[i])) { // this test is not necessary here
+                    nodes.push(items[i]);
+                }
+            }
+
+            // Create links
+            flow.addLink(nodes[0], nodes[1]);
+            flow.addLink(nodes[0], nodes[2]);
+            flow.addLink(nodes[0], nodes[5]);
+            flow.addLink(nodes[0], nodes[13]);
+            flow.addLink(nodes[1], nodes[4]);
+            flow.addLink(nodes[2], nodes[3]);
+            flow.addLink(nodes[3], nodes[0]);
+            flow.addLink(nodes[6], nodes[0]);
+            flow.addLink(nodes[4], nodes[6]);
+            flow.addLink(nodes[7], nodes[0]);
+            flow.addLink(nodes[7], nodes[13]);
+            flow.addLink(nodes[8], nodes[7]);
+            flow.addLink(nodes[9], nodes[10]);
+            flow.addLink(nodes[9], nodes[12]);
+            flow.addLink(nodes[10], nodes[11]);
+            flow.addLink(nodes[11], nodes[12]);
+            flow.addLink(nodes[11], nodes[9]);
+            flow.addLink(nodes[11], nodes[14]);
+            flow.addLink(nodes[13], nodes[8]);
+
+            flow.refresh();
+
+            validateSomeButtons();
+
+            canvas.addEventListener('click', ev_click, false);
+        }
+
+        function ev_click(ev) {
+            if (flow.isSelChanged()) {
+                validateSomeButtons();
+            }
+        }
+        
+        function validateSomeButtons() {
+            var isNodeSelected = false;
+            var isLinkSelected = false;
+            var isSelectedItems = false;
+            var selItems = flow.getSelectedItems();
+            if (selItems.length > 0) {
+                isSelectedItems = true;
+                for (var i in selItems) {
+                    if (flow.isNode(selItems[i])) {
+                        isNodeSelected = true;
+                    }
+                    else if (flow.isLink(selItems[i])) {
+                        isLinkSelected = true;
+                    }
+                }
+            }
+
+            document.getElementById('inOutNodes').disabled = !isNodeSelected;
+            document.getElementById('outNodes').disabled = !isNodeSelected;
+            document.getElementById('inNodes').disabled = !isNodeSelected;
+            document.getElementById('inOutLinks').disabled = !isNodeSelected;
+            document.getElementById('outLinks').disabled = !isNodeSelected;
+            document.getElementById('inLinks').disabled = !isNodeSelected;
+            document.getElementById('allSelectedItems').disabled = !isSelectedItems;
+            document.getElementById('allSelectedNodes').disabled = !isNodeSelected;
+            document.getElementById('allSelectedLinks').disabled = !isLinkSelected;
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+        function getInOutNodes() {
+            var node, link, selnode;
+            var selItems, links;
+            var i, j;
+
+            resetStyles();
+
+            selItems = flow.getSelectedItems();
+            for (i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    selnode = selItems[i];
+                    links = selnode.getLinks();
+                    for (j in links) {
+                        link = links[j];
+                        node = (link.org === selnode) ? link.getDst() : link.getOrg();
+                        emphasizeNode(node, 'red', 3);
+                    }
+                }
+            }
+        }
+
+        function getOutNodes() {
+            var node, link, selnode;
+            var selItems, links;
+            var i, j;
+
+            resetStyles();
+
+            selItems = flow.getSelectedItems();
+            for (i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    selnode = selItems[i];
+                    links = selnode.getLinks();
+                    for (j in links) {
+                        link = links[j];
+                        if (link.getOrg() === selnode) {
+                            node = link.getDst();
+                            emphasizeNode(node, 'red', 3);
+                        }
+                    }
+                }
+            }
+        }
+
+        function getInNodes() {
+            var node, link, selnode;
+            var selItems, links;
+            var i, j;
+
+            resetStyles();
+
+            selItems = flow.getSelectedItems();
+            for (i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    selnode = selItems[i];
+                    links = selnode.getLinks();
+                    for (j in links) {
+                        link = links[j];
+                        if (link.getDst() === selnode) {
+                            node = link.getOrg();
+                            emphasizeNode(node, 'red', 3);
+                        }
+                    }
+                }
+            }
+        }
+
+        function getInOutLinks() {
+            var link, selnode;
+            var selItems, links;
+            var i, j;
+
+            resetStyles();
+
+            selItems = flow.getSelectedItems();
+            for (i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    selnode = selItems[i];
+                    links = selnode.getLinks();
+                    for (j in links) {
+                        link = links[j];
+                        emphasizeLink(link, 'red', 2);
+                    }
+                }
+            }
+        }
+
+        function getOutLinks() {
+            var link, selnode;
+            var selItems, links;
+            var i, j;
+
+            resetStyles();
+
+            selItems = flow.getSelectedItems();
+            for (i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    selnode = selItems[i];
+                    links = selnode.getLinks();
+                    for (j in links) {
+                        link = links[j];
+                        if (link.getOrg() === selnode) {
+                            emphasizeLink(link, 'red', 2);
+                        }
+                    }
+                }
+            }
+        }
+        
+        function getInLinks() {
+            var link, selnode;
+            var selItems, links;
+            var i, j;
+
+            resetStyles();
+
+            selItems = flow.getSelectedItems();
+            for (i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    selnode = selItems[i];
+                    links = selnode.getLinks();
+                    for (j in links) {
+                        link = links[j];
+                        if (link.getDst() === selnode) {
+                            emphasizeLink(link, 'red', 2);
+                        }
+                    }
+                }
+            }
+        }
+
+        function getAllItems() {
+            resetStyles(); // Not necessary in fact in that case
+
+            var items = flow.getItems();
+            for (var i in items) {
+                if (flow.isNode(items[i])) {
+                    emphasizeNode(items[i], 'red', 3);
+                }
+                else if (flow.isLink(items[i])) {
+                    emphasizeLink(items[i], 'red', 2);
+                }
+            }
+        }
+
+        function getAllNodes() {
+            resetStyles();
+
+            var items = flow.getItems();
+            for (var i in items) {
+                if (flow.isNode(items[i])) {
+                    emphasizeNode(items[i], 'red', 3);
+                }
+            }
+        }
+
+        function getAllLinks() {
+            resetStyles();
+
+            var items = flow.getItems();
+            for (var i in items) {
+                if (flow.isLink(items[i])) {
+                    emphasizeLink(items[i], 'red', 2);
+                }
+            }
+        }
+
+        function getAllSelectedItems() {
+            resetStyles();
+
+            var selItems = flow.getSelectedItems();
+            for (var i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    emphasizeNode(selItems[i], 'red', 3);
+                }
+                else if (flow.isLink(selItems[i])) {
+                    emphasizeLink(selItems[i], 'red', 2);
+                }
+            }
+        }
+
+        function getAllSelectedNodes() {
+            resetStyles();
+
+            var selItems = flow.getSelectedItems();
+            for (var i in selItems) {
+                if (flow.isNode(selItems[i])) {
+                    emphasizeNode(selItems[i], 'red', 3);
+                }
+            }
+        }
+
+        function getAllSelectedLinks() {
+            resetStyles();
+
+            var selItems = flow.getSelectedItems();
+            for (var i in selItems) {
+                if (flow.isLink(selItems[i])) {
+                    emphasizeLink(selItems[i], 'red', 2);
+                }
+            }
+        }
+
+        // Reset draw color of every items (nodes and links)
+        function resetStyles() {
+            var items = flow.getItems();
+            for (var i in items) {
+                if (flow.isNode(items[i])) {
+                    emphasizeNode(items[i], 'lightseagreen', 1);
+                }
+                else if (flow.isLink(items[i])) {
+                    emphasizeLink(items[i], 'lightseagreen', 1);
+                }
+            }
+        }
+
+        function emphasizeNode(node, strokeStyle, lineWidth) {
+            node.strokeStyle = strokeStyle;
+            node.lineWidth = lineWidth;
+            node.refresh();
+        }
+
+        function emphasizeLink(link, strokeStyle, lineWidth) {
+            link.strokeStyle = strokeStyle;
+            link.lineWidth = lineWidth;
+            link.refresh();
+        }
+
+        function reset() {
+            resetStyles();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 450px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="450">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+    <p>You have to select a node to enable some buttons. For instance, select the node 0 then click on the 'In and Out nodes' button to show its neighbours.</p>
+    <button id="inOutNodes" onclick="getInOutNodes()">In and out nodes</button>
+    <button id="outNodes" onclick="getOutNodes()">Out nodes</button>
+    <button id="inNodes" onclick="getInNodes()">In nodes</button>
+    <button id="inOutLinks" onclick="getInOutLinks()">In and out links</button>
+    <button id="outLinks" onclick="getOutLinks()">Out links</button>
+    <button id="inLinks" onclick="getInLinks()">In links</button>
+      <br />
+    <button id="allItems" onclick="getAllItems()">All items</button>
+    <button id="allnodes" onclick="getAllNodes()">All nodes</button>
+    <button id="alllinks" onclick="getAllLinks()">All links</button>
+    <button id="allSelectedItems" onclick="getAllSelectedItems()">All selected items</button>
+    <button id="allSelectedNodes" onclick="getAllSelectedNodes()">All selected nodes</button>
+    <button id="allSelectedLinks" onclick="getAllSelectedLinks()">All selected links</button>
+    <button id="reset" onclick="reset()">Reset</button>
+  </body>
+</html>

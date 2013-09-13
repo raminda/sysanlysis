@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>AddFlow for HTML 5 : Workflow Example</title>
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, node, nodes, link, items, i, image1, image2, image3;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.fillStyle = 'white';
+            flow.refresh();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+
+            // Load some images that will be displayed inside nodes
+            image1 = new Image();
+            image1.src = '../images/phone.png';
+            image2 = new Image();
+            image2.src = '../images/mail.png';
+            image3 = new Image();
+            image3.src = '../images/disc.png';
+
+            // Create the nodes-------------------------------------
+
+            flow.nodeModel.strokeStyle = 'blue';
+            flow.nodeModel.textFillStyle = 'black';
+            flow.nodeModel.fillStyle = 'white';
+            flow.nodeModel.gradientFillStyle = 'yellow';
+            flow.nodeModel.textLineHeight = 11;
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.font = "10px Arial";
+
+            node = flow.addNode(90, 20, 87, 45, "Order Entry");
+            node.textPosition = "centerBottom";
+            node.isSelectable = true;
+
+            flow.nodeModel.gradientFillStyle = 'white';
+            node = flow.addNode(118, 105, 30, 30, "and");
+            node = flow.addNode(115, 321, 28, 32, "and");
+
+            flow.nodeModel.gradientFillStyle = 'yellow';
+            node = flow.addNode(21, 219, 80, 35, "Inventory Check");
+            node = flow.addNode(151, 180, 99, 31, "Compile Reference");
+            node = flow.addNode(151, 264, 99, 29, "Evaluate Reference");
+
+            flow.nodeModel.gradientFillStyle = 'white';
+            node = flow.addNode(184, 320, 32, 32, "or");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 50], [50, 0], [100, 50], [50, 100]];
+
+            node = flow.addNode(112, 426, 32, 32, "or");
+            node.shapeFamily = "polygon";
+            node.polygon = [[0, 50], [50, 0], [100, 50], [50, 100]];
+
+            flow.nodeModel.gradientFillStyle = 'yellow';
+            node = flow.addNode(78.5, 375, 100, 35, "Order Evaluation");
+
+            node = flow.addNode(22, 485, 100, 40, "Letter of regret");
+            node.textPosition = "centerBottom";
+
+            node = flow.addNode(155, 495, 80, 25, "Billing");
+
+            node = flow.addNode(155, 560, 80, 25, "Shipping");
+
+            node = flow.addNode(112, 650, 75, 50, "Archive");
+            node.textPosition = "centerBottom";
+
+            // "Role" nodes
+            flow.nodeModel.strokeStyle = 'brown';
+            flow.nodeModel.fillStyle = 'lightgreen';
+            flow.nodeModel.gradientFillStyle = 'lightgreen';
+            flow.nodeModel.textFillStyle = 'navy';
+            flow.nodeModel.shapeFamily = "ellipse";
+
+            node = flow.addNode(2, 80, 110, 40, "Jane\r\nINVENTORY MANAGER");
+            node = flow.addNode(220, 41, 72, 50, "Paul\r\nSECRETARY");
+            node = flow.addNode(270, 376, 73, 50, "Lydia\r\nSECRETARY");
+            node = flow.addNode(387, 518, 40, 36, "Bill");
+            node = flow.addNode(27, 580, 63, 40, "Jack\r\nARCHIVER");
+
+            flow.nodeModel.shapeFamily = "rectangle";
+
+            items = flow.getItems();
+
+            // Get the collection of nodes
+            nodes = [];
+            for (i in items) {
+                if (flow.isNode(items[i])) { // this test is not necessary here
+                    nodes.push(items[i]);
+                }
+            }
+
+            // Assign images to nodes-------------------------------
+
+            nodes[0].image = image1;
+            nodes[9].image = image2;
+            nodes[12].image = image3;
+            image1.onload = function () { nodes[0].refresh(); };
+            image2.onload = function () { nodes[9].refresh(); };
+            image3.onload = function () { nodes[12].refresh(); };
+
+
+            // Create links------------------------------------------
+
+            flow.linkModel.strokeStyle = 'blue';
+            flow.linkModel.lineStyle = "polyline";
+            flow.linkModel.textFillStyle = 'blue';
+            flow.linkModel.font = "10px Arial";
+            flow.linkModel.arrowDst = [[0, 0], [-10, -4], [-6, 0], [-10, 4]];
+
+            link = flow.addLink(nodes[0], nodes[1]);
+
+            link = flow.addLink(nodes[1], nodes[3]);
+            link.addPoint(73, 142);
+
+            link = flow.addLink(nodes[4], nodes[5]);
+
+            link = flow.addLink(nodes[3], nodes[2]);
+            link.addPoint(73, 336);
+
+            link = flow.addLink(nodes[5], nodes[6]);
+
+            link = flow.addLink(nodes[6], nodes[2], "Yes");
+
+            link = flow.addLink(nodes[2], nodes[8]);
+
+            link = flow.addLink(nodes[8], nodes[7]);
+
+            link = flow.addLink(nodes[7], nodes[9], "Reject");
+            link.addPoint(71, 453);
+
+            link = flow.addLink(nodes[7], nodes[10], "Accept");
+            link.addPoint(193, 453);
+
+            link = flow.addLink(nodes[10], nodes[11]);
+
+            link = flow.addLink(nodes[11], nodes[12]);
+            link.strokeStyle = 'green';
+
+            link = flow.addLink(nodes[9], nodes[12]);
+            link.strokeStyle = 'green';
+
+            link = flow.addLink(nodes[1], nodes[4]);
+            link.addPoint(200, 141);
+
+            link = flow.addLink(nodes[6], nodes[4], "No");
+            link.addPoint(288, 336);
+            link.addPoint(288, 195);
+
+            // Default properties for the last links to draw
+            flow.linkModel.lineStyle = "bezier";
+            flow.linkModel.strokeStyle = 'green';
+            flow.linkModel.arrowDst = null;
+
+            // Now create the last links
+            link = flow.addLink(nodes[13], nodes[0]);
+            link.setPoint(30, 50, 1);
+            link.setPoint(30, 20, 2);
+
+            link = flow.addLink(nodes[14], nodes[4]);
+
+            link = flow.addLink(nodes[14], nodes[5]);
+            link.setPoint(370, 140, 1);
+            link.setPoint(370, 270, 2);
+
+            link = flow.addLink(nodes[13], nodes[3]);
+            link.setPoint(25, 164, 2);
+
+            link = flow.addLink(nodes[15], nodes[8]);
+
+            link = flow.addLink(nodes[16], nodes[10]);
+
+            link = flow.addLink(nodes[16], nodes[11]);
+
+            link = flow.addLink(nodes[17], nodes[9]);
+
+            link = flow.addLink(nodes[17], nodes[12]);
+
+            flow.linkModel.lineStyle = "polyline";
+            flow.linkModel.strokeStyle = 'black';
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 500px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="500">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+  </body>
+</html>

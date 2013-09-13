@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tutorial AddFlow for HTML 5 : node and link properties</title>
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, node1, node2, node3, link1, link2, link3;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            // Create 3 nodes 
+            node1 = flow.addNode(40, 40, 80, 80, "First node");
+            node1.fillStyle = 'yellow';
+            node1.gradientFillStyle = 'lightyellow';
+            node1.strokeStyle = 'navy';
+            node1.lineWidth = 2;
+
+            node2 = flow.addNode(270, 179, 80, 80, "Second node");
+            node2.fillStyle = 'yellow';
+            node2.gradientFillStyle = 'lightyellow';
+            node2.strokeStyle = 'navy';
+            node2.lineWidth = 2;
+            node2.shapeFamily = "rectangle";
+
+            node3 = flow.addNode(40, 230, 80, 80, "Third node");
+            node3.fillStyle = 'yellow';
+            node3.gradientFillStyle = 'lightyellow';
+            node3.strokeStyle = 'navy';
+            node3.lineWidth = 2;
+            node3.shapeFamily = "polygon";
+            node3.polygon = [[0, 50], [50, 0], [100, 50], [50, 100]];
+
+            // Create 3 links
+            link1 = flow.addLink(node1, node2, "link 1");
+            link1.strokeStyle = 'navy';
+            link1.textFillStyle = 'red';
+
+            link2 = flow.addLink(node2, node2, "link 2");
+            link2.strokeStyle = 'navy';
+            link2.textFillStyle = 'red';
+            link2.setLineStyle('bezier');
+
+            link3 = flow.addLink(node2, node3, 'link 3');
+            link3.strokeStyle = 'navy';
+            link3.textFillStyle = 'red';
+            link3.setLineStyle('orthogonal');
+            link3.arrowDst = [[0, 0], [-14, -6], [-10, 0], [-14, 6]];
+
+            flow.refresh();
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 400px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+  </body>
+</html>

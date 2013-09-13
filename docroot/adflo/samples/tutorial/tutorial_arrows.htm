@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Arrows</title>
+     
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, nodes, items, i, link1, link2, link3, link4, link5, link6;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            // To accelerate the drawing
+            flow.beginUpdate();
+
+            flow.fillStyle = 'white';
+            flow.refresh();
+
+            flow.nodeModel.fillStyle = 'yellow';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.font = "10px Arial";
+            flow.nodeModel.textLineHeight = 10;
+            
+            flow.addNode(50, 50, 40, 40);
+            flow.addNode(300, 50, 40, 40);
+
+            flow.addNode(50, 100, 40, 40);
+            flow.addNode(300, 100, 40, 40);
+
+            flow.addNode(50, 150, 40, 40);
+            flow.addNode(300, 150, 40, 40);
+
+            flow.addNode(50, 200, 40, 40);
+            flow.addNode(300, 200, 40, 40);
+
+            flow.addNode(50, 250, 40, 40);
+            flow.addNode(300, 250, 40, 40);
+
+            flow.addNode(50, 300, 40, 40);
+            flow.addNode(300, 300, 40, 40);
+
+            // Get the collection of nodes
+            nodes = [];
+            items = flow.getItems();
+            for (i in items) {
+                nodes.push(items[i]);
+            }
+
+            link1 = flow.addLink(nodes[0], nodes[1], "Default Arrow");
+            link1.arrowOrg = link1.arrowDst;
+
+            link2 = flow.addLink(nodes[2], nodes[3], "Arrow2");
+            link2.arrowDst = [[0, 0], [-10, -4], [-6, 0], [-10, 4]];
+            link2.arrowOrg = link2.arrowDst;
+
+            link3 = flow.addLink(nodes[4], nodes[5], "Losange");
+            link3.arrowDst = [[0, 0], [-6, -6], [-12, 0], [-6, 6]];
+            link3.arrowOrg = link3.arrowDst;
+
+            link4 = flow.addLink(nodes[6], nodes[7], "Fork");
+            link4.arrowDst = [[-10, 0], [0, -4], [0, 4], [-10, 0]];
+            link4.arrowOrg = link4.arrowDst;
+
+            link5 = flow.addLink(nodes[8], nodes[9], "Closed fork");
+            link5.arrowDst = [[-10, 0], [0, -4], [0, 4], [-10, 0], [-10, -4], [-10, 4]];
+            link5.arrowOrg = link5.arrowDst;
+
+            link6 = flow.addLink(nodes[10], nodes[11], "Opened arrow");
+            link6.arrowDst = [[0, 0], [-10, -4], [0, 0], [-10, 4]];
+            link6.arrowOrg = link6.arrowDst;
+
+            flow.endUpdate();
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+        <button onclick="selectall()">Select All</button>
+        <button onclick="delete2()">Delete</button>
+        <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+            <option value="none" selected>none</option>
+            <option value="selection" >selection</option>
+            <option value="selection2">selection2</option>
+            <option value="zoom">zoom</option>
+            <option value="pan">pan</option>
+        </select>
+        <div id="div1" style="border-style: solid; width: 1000px; height: 500px; overflow: auto;">
+            <canvas id="canvas1" width="1000" height="500">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+        </div>
+  </body>
+</html>

@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Network Example</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram()
+        {
+            var canvas, node, nodes, items, i, image1, image2, image3;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.fillStyle = 'lightblue';
+            flow.isFixedSize = true;
+            flow.refresh();
+                        
+            flow.nodeModel.strokeStyle = 'transparent';
+            flow.nodeModel.textFillStyle = 'navy';
+            flow.nodeModel.fillStyle = 'transparent';
+            flow.nodeModel.gradientFillStyle = 'transparent';
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.textPosition = "centerBottom"
+
+            flow.linkModel.strokeStyle = 'orange';
+            flow.linkModel.fillStyle = 'orange';
+            flow.linkModel.arrowDst = null;
+            flow.linkModel.isStretchable = false;
+            flow.linkModel.lineWidth = 3;
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+
+            // Load some images that will be displayed inside nodes
+            image1 = new Image();
+            image1.src = '../images/computer.png';
+            image2 = new Image();
+            image2.src = '../images/printer.png';
+            image3 = new Image();
+            image3.src = '../images/users.png';
+                        
+            // Create the nodes
+            flow.addNode(30, 135, 50, 70, "Paul");
+            flow.addNode(180, 30, 50, 70, "Vera");
+            flow.addNode(435, 105, 50, 70, "Chang");
+            flow.addNode(375, 255, 50, 50, "");
+            flow.addNode(135, 270, 50, 50, "");
+
+            items = flow.getItems();
+
+            // Get the collection of nodes
+            nodes = [];
+            for (i in items) {
+                if (flow.isNode(items[i])) { // this test is not necessary here
+                    nodes.push(items[i]);
+                }
+            }
+
+            // Assign images
+            nodes[0].image = image1;
+            nodes[1].image = image1;
+            nodes[2].image = image1;
+            nodes[3].image = image2;
+            nodes[4].image = image3;
+
+            image1.onload = function () {
+                nodes[0].refresh();
+                nodes[1].refresh();
+                nodes[2].refresh();
+            };
+
+            image2.onload = function () {
+                nodes[3].refresh();
+            };
+
+            image3.onload = function () {
+                nodes[4].refresh();
+            };
+
+            // Create the links
+            flow.addLink(nodes[0], nodes[1]);
+            flow.addLink(nodes[1], nodes[2]);
+            flow.addLink(nodes[2], nodes[3]);
+            flow.addLink(nodes[3], nodes[4]);
+            flow.addLink(nodes[4], nodes[0]);
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+        
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+        </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <br />
+    <canvas id="canvas1" width="900" height="440">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    <p>We use transparent rectangular nodes containing an image. Links cannot be stretched here. Notice also that the addflow canvas size does not change and that there is no scrolling here.</p>
+  </body>
+</html>

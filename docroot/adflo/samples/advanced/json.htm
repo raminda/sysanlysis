@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : JSON Example</title>
+         
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+    <script type="text/javascript" src="json2.js"></script>
+    <script type="text/javascript" src="jsonflow.js"></script>
+        
+    <script type="text/javascript">
+        var canvas, canvas2, flow, flow2;
+
+        function drawTerminator(ctx, x, y, w, h) {
+            ctx.beginPath();
+            ctx.moveTo(x + w / 4, y);
+            ctx.bezierCurveTo(x - w / 16, y, x - w / 16, y + h, x + w / 4, y + h);
+            ctx.lineTo(x + 3 * w / 4, y + h);
+            ctx.bezierCurveTo(x + w + w / 16, y + h, x + w + w / 16, y, x + w - w / 4, y);
+            ctx.lineTo(x + w / 4, y);
+            ctx.closePath();
+        }
+
+        function fillPredefinedProcess(ctx, x, y, w, h) {
+            ctx.beginPath();
+            ctx.moveTo(x + w / 6, y);
+            ctx.lineTo(x + w / 6, y + h);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x + w - w / 6, y);
+            ctx.lineTo(x + w - w / 6, y + h);
+            ctx.stroke();
+        }
+
+        function createDiagram() {
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.fillStyle = '#efe';
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = '#ff8';
+            flow.nodeModel.shapeFamily = "rectangle";
+
+            flow.linkModel.strokeStyle = 'rgb(0, 64, 192)';
+            flow.linkModel.textFillStyle = '#f00';
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+            
+            var node0 = flow.addNode(50, 20, 80, 80, "node 0");
+            node0.fillShape = fillPredefinedProcess;
+
+            var node1 = flow.addNode(200, 250, 80, 80, "node 1");
+            node1.shapeFamily = "ellipse";
+
+            var link01 = flow.addLink(node0, node1, "link 01");
+            link01.addPoint(90, 170);
+
+            var node2 = flow.addNode(350, 120, 80, 80, "node 2");
+            node2.fillStyle = '#f88';
+            node2.shapeFamily = "other";
+            node2.drawShape = drawTerminator;
+
+            var link12 = flow.addLink(node1, node2, "link 12");
+            link12.setLineStyle("bezier");
+
+            flow.refresh();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+
+            // Second canvas: it has the same property values than the first.
+            canvas2 = document.getElementById('canvas2');
+            flow2 = new Lassalle.Flow(canvas2);
+
+            flow2.fillStyle = '#efe';
+            flow2.refresh();
+
+            flow2.nodeModel.strokeStyle = '#00f';
+            flow2.nodeModel.textFillStyle = '#00f';
+            flow2.nodeModel.fillStyle = '#ff8';
+            flow2.nodeModel.shapeFamily = "rectangle";
+
+            flow2.linkModel.strokeStyle = 'rgb(0, 64, 192)';
+            flow2.linkModel.textFillStyle = '#f00';
+        }
+        
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+        
+        function copy() {
+            var jsonData = JSONFlow.toJSON(flow);
+            JSONFlow.fromJSON(flow2, jsonData);
+            var textzone = document.getElementById('json');
+            textzone.value = jsonData;
+        }
+                
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div>
+        <div id="div1" style="border-style: solid; width: 450px; height:400px; overflow: auto; float: left">
+            <canvas id="canvas1" width="450" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+        </div>
+        <div id="div2" style="border-style: solid; width: 450px; height:400px; overflow: auto; float: left">
+            <canvas id="canvas2" width="450" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+        </div>
+        <div id="div3" style="border-style: none; width: 300px; height:400px;  float: left">
+            <textarea id="json" cols="34" rows="26"></textarea>
+        </div>
+    </div>
+    <div style="display: inline-block">
+        <p>We use the JSON format to copy the diagram to the right canvas.</p>
+        <div>
+            <button onclick="copy()">Copy</button>
+        </div>
+    </div>
+  </body>
+</html>

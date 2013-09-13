@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Node Image</title>
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas, image, node1, node2, node3, node4, node5, node6, node7, node8, node9;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.fillStyle = '#efe';
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = '#00f';
+            flow.nodeModel.textFillStyle = '#00f';
+            flow.nodeModel.fillStyle = 'white';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.font = "16px Arial";
+            flow.nodeModel.imageMargin = { left: 10, top: 10, right: 10, bottom: 10 };
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            image = new Image();
+            image.src = '../images/users.png';
+
+            node1 = flow.addNode(50, 20, 120, 80);
+            node1.imagePosition = "leftTop";
+            node1.image = image;
+
+            node2 = flow.addNode(250, 20, 120, 80);
+            node2.imagePosition = "centerTop";
+            node2.image = image;
+
+            node3 = flow.addNode(450, 20, 120, 80);
+            node3.imagePosition = "rightTop";
+            node3.image = image;
+
+            node4 = flow.addNode(50, 120, 120, 80);
+            node4.imagePosition = "leftMiddle";
+            node4.image = image;
+
+            node5 = flow.addNode(250, 120, 120, 80);
+            node5.imagePosition = "centerMiddle";
+            node5.image = image;
+
+            node6 = flow.addNode(450, 120, 120, 80);
+            node6.imagePosition = "rightMiddle";
+            node6.image = image;
+
+            node7 = flow.addNode(50, 220, 120, 80);
+            node7.imagePosition = "leftBottom";
+            node7.image = image;
+
+            node8 = flow.addNode(250, 220, 120, 80);
+            node8.imagePosition = "centerBottom";
+            node8.image = image;
+
+            node9 = flow.addNode(450, 220, 120, 80);
+            node9.imagePosition = "rightBottom";
+            node9.image = image;
+
+            image.onload = function () {
+                node1.refresh();
+                node2.refresh();
+                node3.refresh();
+                node4.refresh();
+                node5.refresh();
+                node6.refresh();
+                node7.refresh();
+                node8.refresh();
+                node9.refresh();
+            };
+
+            flow.refresh();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 400px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="400">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+  </body>
+</html>
+
+

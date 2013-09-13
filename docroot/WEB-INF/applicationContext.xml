@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:task="http://www.springframework.org/schema/task" 
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans        
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd        
+		http://www.springframework.org/schema/aop        
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd        
+		http://www.springframework.org/schema/jee        
+		http://www.springframework.org/schema/jee/spring-jee-2.0.xsd        
+		http://www.springframework.org/schema/tx        
+		http://www.springframework.org/schema/tx/spring-tx.xsd        
+		http://www.springframework.org/schema/context        
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd        
+		http://www.springframework.org/schema/task        
+		http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+		
+	<context:component-scan base-package="com.millenniumit.mx"></context:component-scan>
+	
+	
+<!-- ***BasicDataSourcees*** -->
+
+	<!-- ***************************************************Normal Way****************************************************************  -->
+	
+	<!-- 
+	ServerDataSourcees
+		<bean id="ITICdbServer" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+			<property name="url" value="jdbc:mysql://172.25.40.135/itic_hdsizing?zeroDateTimeBehavior=convertToNull"></property>
+			<property name="username" value="itic"></property>
+			<property name="password" value="mit123"></property>
+		</bean>	
+	LocalDataSourcees-->
+		<bean id="ITICdbLocal" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+			<property name="url" value="jdbc:mysql://localhost/NetHDSizing?zeroDateTimeBehavior=convertToNull"></property>
+			<property name="username" value="root"></property>
+			<property name="password" value="Ram"></property>
+		</bean> 
+		
+	<!-- ****************************************************Normal Way***************************************************************  -->
+	
+	<!-- *****************************************************************************************************************************  -->
+	<!-- *****************************************************************************************************************************  -->
+	
+	<!-- *******************************************************JNDI******************************************************************  -->
+
+	<!--  LocalDataSourcees 
+		<jee:jndi-lookup jndi-name="java:comp/env/dbLocal" id="dbServer" /> -->
+	<!-- ServerDataSourcees -->
+		<jee:jndi-lookup jndi-name="java:comp/env/NetHDSizing" id="dbServer" />
+		
+	<!-- *******************************************************JNDI******************************************************************  -->
+	
+	
+	<!-- *****************************************************************************************************************************  -->
+	<!-- *****************************************************************************************************************************  -->
+			
+	<!-- ********************************************************Demo Names***********************************************************  -->	
+			<!--<property name="dataSource" ref="ITICdbLocal"></property>  --><!-- insert this for local Use -->
+			<!-- <property name="dataSource" ref="ITICdbServer"></property> --><!-- insert this for Server Use -->
+			<!-- <property name="dataSource" ref="dbLocal"></property> --> <!-- insert this for local jndi Use -->
+			<!-- <property name="dataSource" ref="dbServer"></property> --> <!-- insert this for Server jndi Use -->
+	<!-- ********************************************************Demo Names***********************************************************  -->
+	
+	<!-- ****SessionFactorys*** -->	
+		<bean id="ITICsessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+			<property name="dataSource" ref="ITICdbLocal"></property>
+			<property name="packagesToScan">
+				<list>
+					<value>com.millenniumit.mx.data.itic.domain</value>
+					<!-- <value>com.millenniumit.mx.data.ITIC.domain</value> -->
+				</list>
+			</property>
+		</bean>
+		
+		
+	<!-- *****************************************************************************************************************************  -->
+	<!-- *****************************************************************************************************************************  -->
+		
+		
+	<!-- ********************************************************transaction********************************************************** -->		
+	<!-- transaction-managers -->
+		<tx:annotation-driven transaction-manager="ITICtxManager"></tx:annotation-driven>
+		<bean id="ITICtxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+			<property name="sessionFactory" ref="ITICsessionFactory"></property>
+		</bean>
+		
+	<!-- *****************************************************************************************************************************  -->
+	<!-- *****************************************************************************************************************************  -->
+		
+		
+	<!-- ********************************************************Dermo imp class*******************************************************  -->
+		
+		<!-- <bean id="AcUserService" class="com.millenniumit.mx.data.ITIC.service.impl.AcUserServiceImpl"></bean>
+		<bean id="EquipmentsService" class="com.millenniumit.mx.data.ITIC.service.impl.EquipmentsServiceImpl"></bean>
+		<bean id="EquipmentsBulkService" class="com.millenniumit.mx.data.ITIC.service.impl.EquipmentsBulkServiceImpl"></bean>
+		<bean id="ItemTypeService" class="com.millenniumit.mx.data.ITIC.service.impl.ItemTypeServiceImpl"></bean>
+		<bean id="PackagesService" class="com.millenniumit.mx.data.ITIC.service.impl.PackagesServiceImpl"></bean>
+		<bean id="ProjectItemsService" class="com.millenniumit.mx.data.ITIC.service.impl.ProjectItemsServiceImpl"></bean>
+		<bean id="ProjectsService" class="com.millenniumit.mx.data.ITIC.service.impl.ProjectsServiceImpl"></bean>
+		<bean id="SiteTypeService" class="com.millenniumit.mx.data.ITIC.service.impl.SiteTypeServiceImpl"></bean> -->
+		
+	
+	<!-- *****************************************************************************************************************************  -->
+	<!-- *****************************************************************************************************************************  -->
+		
+		
+	<!-- ******************************************************Implementation class****************************************************  -->
+<!-- Beans for @Autowire Classes Using Service Implementation Class  EquipmentMapingService-->
+		
+		<bean id="EquipmentMapingService" class="com.millenniumit.mx.data.itic.service.impl.EquipmentMapingServiceImpl"></bean>
+		<bean id="EquipmentsService" class="com.millenniumit.mx.data.itic.service.impl.EquipmentsServiceImpl"></bean>
+		<bean id="EquipmentsBulkService" class="com.millenniumit.mx.data.itic.service.impl.EquipmentsBulkServiceImpl"></bean>
+		<bean id="ItemTypeService" class="com.millenniumit.mx.data.itic.service.impl.ItemTypeServiceImpl"></bean>
+		<bean id="PackagesService" class="com.millenniumit.mx.data.itic.service.impl.PackagesServiceImpl"></bean>
+		<bean id="ProjectItemsService" class="com.millenniumit.mx.data.itic.service.impl.ProjectItemsServiceImpl"></bean>
+		<bean id="ProjectsService" class="com.millenniumit.mx.data.itic.service.impl.ProjectsServiceImpl"></bean>
+		<bean id="Versions_details" class="com.millenniumit.mx.data.itic.service.impl.Versions_detailsServiceImpl"></bean>
+		
+	
+	<!-- *****************************************************************************************************************************  -->
+	<!-- *****************************************************************************************************************************  -->
+	
+</beans>

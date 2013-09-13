@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Genealogy Example</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        var drawTitleAndComments = function (ctx) {
+            var title = "The Bourbons";
+            var remark = "(The yellow color indicates a king)";
+            var comment1 = "In this diagram, you can just select nodes.";
+            var comment2 = "You cannot select links. You cannot move or";
+            var comment3 = "resize a node and you cannot create new nodes";
+            var comment4 = "or new links.";
+
+            ctx.fillStyle = "orange";
+            ctx.font = "20px Arial"
+            ctx.fillText(title, 30, 50);
+
+            ctx.fillStyle = "black";
+            ctx.font = "12px Arial"
+            ctx.fillText(remark, 30, 70);
+
+            ctx.fillText(comment1, 30, 100);
+            ctx.fillText(comment2, 30, 115);
+            ctx.fillText(comment3, 30, 130);
+            ctx.fillText(comment4, 30, 145);
+        }
+
+        function createDiagram() {
+            var canvas, node, nodes, items, i;
+
+            canvas = document.getElementById('canvas1');
+
+            flow = new Lassalle.Flow(canvas);
+
+            flow.canMoveNode = false;
+            flow.canDrawLink = false;
+            flow.canDrawNode = false;
+            flow.canSizeNode = false;
+            flow.fillStyle = 'white';
+            flow.ownerDraw = drawTitleAndComments;
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = 'black';
+            flow.nodeModel.textFillStyle = 'black';
+            flow.nodeModel.textLineHeight = 12;
+            flow.nodeModel.fillStyle = 'white';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.lineWidth = 2;
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.pins = [[0, 50], [50, 0], [100, 50], [50, 100]];
+
+            flow.linkModel.strokeStyle = 'black';
+            flow.linkModel.textFillStyle = 'black';
+            flow.linkModel.lineWidth = 2;
+            flow.linkModel.lineStyle = 'orthogonal';
+            flow.linkModel.arrowDst = null;
+            flow.linkModel.isSelectable = false;
+            flow.linkModel.orthoMargin = 5;
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+
+            // Create the nodes
+            flow.addNode(350, 20, 160, 50, "Antoine de Bourbon\r\n1518-1562");
+
+            node = flow.addNode(350, 85, 160, 50, "Henry IV\r\n1553-1569-1610");
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            node = flow.addNode(350, 150, 160, 50, "Louis XIII\r\n1601-1610-1643"); // king
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            node = flow.addNode(180, 215, 160, 50, "Louis XIV dit le Grand\r\n1638-1643-1715"); // king
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            flow.addNode(180, 280, 160, 50, "Louis de France\r\nGrand Dauphin\r\n1661-1711");
+
+            flow.addNode(180, 345, 160, 50, "Louis de France\r\nDauphin\r\n1682-1712");
+
+            node = flow.addNode(180, 410, 160, 50, "Louis XV\r\n1710-1715-1774");
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            flow.addNode(180, 475, 160, 50, "Louis de France\r\nDauphin\r\n1729-1765");
+
+            node = flow.addNode(10, 540, 160, 50, "Louis XVI\r\n1754-1774-1792-1793");
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            flow.addNode(10, 600, 160, 50, "Louis XVII\r\n1785-1795?");
+
+            node = flow.addNode(180, 540, 160, 50, "Louis XVIII\r\n1755-1814-1824");
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            node = flow.addNode(350, 540, 160, 50, "Charles X\r\n1757-1824-1830-1836");
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            flow.addNode(520, 215, 160, 50, "Philippe d'Orléans\r\n1640-1701");
+
+            flow.addNode(520, 280, 160, 50, "Philippe II d'Orléans\r\n1674-1723");
+
+            flow.addNode(520, 345, 160, 50, "Louis d'Orléans\r\n1703-1752");
+
+            flow.addNode(520, 410, 160, 50, "Louis-Philippe d'Orléans\r\n1725-1785");
+
+            flow.addNode(520, 475, 160, 50, "Louis-Philippe Joseph\r\ndit Philippe Egalité\r\n1743-1793");
+
+            node = flow.addNode(520, 540, 160, 50, "Louis-Philippe\r\n1773-1830-1848-1850");
+            node.fillStyle = node.gradientFillStyle = 'yellow';
+
+            // Get the collection of nodes
+            nodes = [];
+            items = flow.getItems();
+            for (i in items) {
+                nodes.push(items[i]);
+            }
+
+            // Create the links
+            flow.addLink(nodes[0], nodes[1], "", 3, 1);
+            flow.addLink(nodes[1], nodes[2], "", 3, 1);
+            flow.addLink(nodes[2], nodes[3], "", 3, 1);
+            flow.addLink(nodes[3], nodes[4], "", 3, 1);
+            flow.addLink(nodes[4], nodes[5], "", 3, 1);
+            flow.addLink(nodes[5], nodes[6], "", 3, 1);
+            flow.addLink(nodes[6], nodes[7], "", 3, 1);
+            flow.addLink(nodes[7], nodes[8], "", 3, 1);
+            flow.addLink(nodes[8], nodes[9], "", 3, 1);
+            flow.addLink(nodes[7], nodes[10], "", 3, 1);
+            flow.addLink(nodes[7], nodes[11], "", 3, 1);
+            flow.addLink(nodes[2], nodes[12], "", 3, 1);
+            flow.addLink(nodes[12], nodes[13], "", 3, 1);
+            flow.addLink(nodes[13], nodes[14], "", 3, 1);
+            flow.addLink(nodes[14], nodes[15], "", 3, 1);
+            flow.addLink(nodes[15], nodes[16], "", 3, 1);
+            flow.addLink(nodes[16], nodes[17], "", 3, 1);
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 550px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="550">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+  </body>
+</html>

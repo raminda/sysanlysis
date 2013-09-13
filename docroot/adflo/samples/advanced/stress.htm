@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AddFlow for HTML 5 : Stress</title>
+     
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        function createDiagram() {
+            var canvas;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+
+            flow.useQuadtree(true); // By default, it is true so this call is not needed here
+            flow.canSelectOnMouseMove = false;
+            flow.canSendSelectionChangedEvent = false;
+
+            flow.fillStyle = 'white';
+            flow.refresh();
+            
+            flow.nodeModel.strokeStyle = 'blue';
+            flow.nodeModel.textFillStyle = 'blue';
+            flow.nodeModel.fillStyle = '#ff8';
+            flow.nodeModel.gradientFillStyle = '#ff8';
+
+            flow.linkModel.strokeStyle = 'rgb(0, 64, 192)';
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+        function random() {
+            randomCreation(flow, 4000, 20000, 20000, 30);
+        }
+        
+        function reset() {
+            flow.zoom = 1;
+            flow.clear();
+            flow.taskManager.clear();
+        }
+
+        function zoomAutofit() {
+            flow.zoomRectangle(0, 0, flow.getXExtent(), flow.getYExtent());
+        }
+
+        function noZoom() {
+            flow.zoom = 1;
+            flow.refresh();
+        }
+        
+        function randomCreation(flow, maxnodes, xarea, yarea, nodesize) {
+            var org, dst, link, i, x, y;
+            
+            // So that the user will be able to undo the diagram in one time
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+            
+            // Create first node (this one is placed in top left corner)
+            x = 100;
+            y = 100;
+            org = flow.addNode(x, y, nodesize, nodesize);
+
+            for (i = 0; i < maxnodes; i++) {
+                // Create a node at a random position but not far from the previous one
+                // to avoid having too long links.
+                t = Math.floor(Math.random() * 100);
+                sign = (t < 50) ? 1 : -1;
+                dx = Math.floor(Math.random() * 500);
+                dy = Math.floor(Math.random() * 500);
+                x += sign * dx;
+                if (x < 0)
+                    x += 2 * dx;
+                if (x > xarea)
+                    x -= 2 * dx;
+                y += sign * dy;
+                if (y < 0)
+                    y += 2 * dy;
+                if (y > yarea)
+                    y -= 2 * dy;
+                x = Math.max(0, x);
+                y = Math.max(0, y);
+                dst = flow.addNode(x, y, nodesize, nodesize);
+
+                // and add a link from previous node (link not added if org is null)
+                link = flow.addLink(org, dst);
+
+                // The current destination node is the origin node for the next addd link.
+                org = dst;
+            }
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+        <button onclick="selectall()">Select All</button>
+        <button onclick="delete2()">Delete</button>
+        <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+            <option value="none" selected>none</option>
+            <option value="selection" >selection</option>
+            <option value="selection2">selection2</option>
+            <option value="zoom">zoom</option>
+            <option value="pan">pan</option>
+        </select>
+        <div id="div1" style="border-style: solid; width: 900px; height: 450px; overflow: auto;">
+            <canvas id="canvas1" width="900" height="450" >*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+        </div>
+        <p>Clicking the Go button causes the creation of 4000 nodes and 4000 links at random position, 
+           each node being linked with the previous one.</p> 
+        <button onclick="random()">Go</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="zoomAutofit()">Zoom autofit</button>
+        <button onclick="noZoom()">No Zoom</button>
+  </body>
+</html>

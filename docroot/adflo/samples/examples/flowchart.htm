@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>AddFlow for HTML 5 : Flowchart Example</title>
+      
+    <link rel="stylesheet" href="../../skins/styles.css" />
+
+    <script type="text/javascript" src="../../addflow/addflow-min.js"></script>
+        
+    <script type="text/javascript">
+        var flow;
+
+        var drawTerminator = function (ctx, x, y, w, h) {
+            ctx.beginPath();
+            ctx.moveTo(x + w / 4, y);
+            ctx.bezierCurveTo(x - w / 16, y, x - w / 16, y + h, x + w / 4, y + h);
+            ctx.lineTo(x + 3 * w / 4, y + h);
+            ctx.bezierCurveTo(x + w + w / 16, y + h, x + w + w / 16, y, x + w - w / 4, y);
+            ctx.lineTo(x + w / 4, y);
+            ctx.closePath();
+        }
+
+        function fillPredefinedProcess(ctx, x, y, w, h) {
+            ctx.beginPath();
+            ctx.moveTo(x + w / 6, y);
+            ctx.lineTo(x + w / 6, y + h);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x + w - w / 6, y);
+            ctx.lineTo(x + w - w / 6, y + h);
+            ctx.stroke();
+        }
+
+        function createDiagram() {
+            var canvas, node1, node2, node3, node4, node5, node6, node7, node8, link;
+
+            canvas = document.getElementById('canvas1');
+            flow = new Lassalle.Flow(canvas);
+            flow.fillStyle = 'white';
+            flow.gridDraw = true;
+            flow.gridSnap = true;
+            flow.gridSizeX = 20;
+            flow.gridSizeY = 20;
+            flow.handleSize = 12;
+            flow.handleGradientColor1 = 'green';
+            flow.refresh();
+
+            flow.nodeModel.strokeStyle = 'black';
+            flow.nodeModel.textFillStyle = 'black';
+            flow.nodeModel.fillStyle = 'lightblue';
+            flow.nodeModel.gradientFillStyle = 'white';
+            flow.nodeModel.lineWidth = 2;
+            flow.nodeModel.textLineHeight = 15;
+            flow.nodeModel.shapeFamily = "rectangle";
+            flow.nodeModel.pins = [[0, 50], [50, 0], [100, 50], [50, 100]];
+            flow.nodeModel.isShadowed = true;
+
+            flow.linkModel.strokeStyle = 'black';
+            flow.linkModel.textFillStyle = 'black';
+            flow.linkModel.lineStyle = "orthogonal";
+            flow.linkModel.lineWidth = 2;
+            flow.linkModel.isShadowed = true;
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.beginAction("creatediagram");
+            }
+
+            flow.beginUpdate();
+
+            // Create the nodes
+            node1 = flow.addNode(100, 20, 180, 60, "Timer1:\r\ncalled(every)\r\n2 seconds)");
+            node1.fillStyle = 'orange';
+            node1.gradientFillStyle = 'orange';
+            node1.shapeFamily = "rectangle";
+            node1.fillShape = fillPredefinedProcess;
+
+            node2 = flow.addNode(120, 120, 140, 60, "Timer1\r\n= true ?");
+            node2.fillStyle = 'white';
+            node2.gradientFillStyle = 'yellow';
+            node2.shapeFamily = "polygon";
+            node2.polygon = [[0, 50], [50, 0], [100, 50], [50, 100]];
+
+            node3 = flow.addNode(100, 220, 180, 80, "Check if a\r\nprevious(encoding)\r\nsession failed");
+
+            node4 = flow.addNode(100, 360, 180, 80, "Check if newly\r\nupdated files");
+            node4.fillStyle = 'white';
+            node4.gradientFillStyle = 'yellow';
+            node4.shapeFamily = "polygon";
+            node4.polygon = [[0, 50], [50, 0], [100, 50], [50, 100]];
+
+            node5 = flow.addNode(100, 480, 180, 80, "Encoding\r\nStep1\r\n...\r\nStep5");
+
+            node6 = flow.addNode(340, 120, 140, 60, "Exit Timer1");
+            node6.fillStyle = 'white';
+            node6.gradientFillStyle = 'gray';
+            node6.shapeFamily = "other";
+            node6.drawShape = drawTerminator;
+
+            node7 = flow.addNode(340, 360, 140, 80, "Exit Timer1");
+            node7.fillStyle = 'white';
+            node7.gradientFillStyle = 'gray';
+            node7.shapeFamily = "other";
+            node7.drawShape = drawTerminator;
+
+            node8 = flow.addNode(120, 600, 140, 60, "Exit Timer1");
+            node8.fillStyle = 'white';
+            node8.gradientFillStyle = 'gray';
+            node8.shapeFamily = "other";
+            node8.drawShape = drawTerminator;
+
+            // Create the links
+            flow.addLink(node1, node2, "", 3, 1);
+            flow.addLink(node2, node3, "no", 3, 1);
+            flow.addLink(node3, node4, "no", 3, 1);
+            flow.addLink(node4, node5, "yes", 3, 1);
+            flow.addLink(node5, node8, "", 3, 1);
+            flow.addLink(node2, node6, "yes", 2, 0);
+            flow.addLink(node4, node7, "no", 2, 0);
+
+            link = flow.addLink(node4, node5, "yes", 0, 0);
+            link.setPoint(100, 400, 0);
+            link.setPoint(20, 400, 1);
+            link.setPoint(20, 520, 2);
+            link.setPoint(100, 520, 3);
+
+            flow.endUpdate();
+
+            if (flow.taskManager.canUndoRedo) {
+                flow.taskManager.endAction();
+            }
+        }
+
+        function undo() {
+            flow.taskManager.undo();
+        }
+
+        function redo() {
+            flow.taskManager.redo();
+        }
+
+        function selectall() {
+            flow.selectAll();
+        }
+
+        function delete2() {
+            flow.deleteSel();
+        }
+
+    </script>
+  </head>
+
+  <body onload="createDiagram()">
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="selectall()">Select All</button>
+    <button onclick="delete2()">Delete</button>
+    <select id="mouseSelection" onchange="flow.mouseSelection = document.getElementById('mouseSelection').value;" >
+        <option value="none" selected>none</option>
+        <option value="selection" >selection</option>
+        <option value="selection2">selection2</option>
+        <option value="zoom">zoom</option>
+        <option value="pan">pan</option>
+    </select>
+    <div id="div1" style="border-style: solid; width: 900px; height: 500px; overflow: auto;">
+        <canvas id="canvas1" width="900" height="500">*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+    </div>
+  </body>
+</html>
